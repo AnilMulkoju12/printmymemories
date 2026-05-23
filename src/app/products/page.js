@@ -4,7 +4,7 @@ import { useGetProductsQuery } from "@/redux/services/productApi";
 
 export default function ProductsPage() {
   const { data, isLoading, error } = useGetProductsQuery();
-
+  console.log("productsData", data);
   if (isLoading)
     return <div className="text-center mt-20">Loading...</div>;
 

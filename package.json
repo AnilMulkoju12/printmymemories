@@ -2,6 +2,7 @@
   "name": "gift-store",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -11,6 +12,8 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",
     "@supabase/supabase-js": "^2.104.1",
+    "dotenv": "^17.4.2",
+    "lucide-react": "^1.14.0",
     "next": "16.2.4",
     "pg": "^8.20.0",
     "react": "19.2.4",

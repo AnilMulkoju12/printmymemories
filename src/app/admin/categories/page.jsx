@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 
-import "./globals.css";
+import "../../globals.css";
 
 export default function CategoriesPage() {
   const router = useRouter();
@@ -26,10 +26,6 @@ export default function CategoriesPage() {
   const [loading, setLoading] = useState(false);
 
   const [openModal, setOpenModal] = useState(false);
-
-  const [editMode, setEditMode] = useState(false);
-
-  const [selectedId, setSelectedId] = useState(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -82,44 +78,12 @@ export default function CategoriesPage() {
 
       await fetchCategories();
 
-      resetModal();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+      setOpenModal(false);
 
-  // UPDATE CATEGORY
-  const handleEditCategory = async () => {
-    try {
-      if (!formData.name || !formData.image) {
-        alert("Please fill all fields");
-        return;
-      }
-
-      setLoading(true);
-
-      const res = await fetch(`/api/categories/${selectedId}`, {
-        method: "PUT",
-
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify({
-          name: formData.name,
-          image: formData.image,
-        }),
+      setFormData({
+        name: "",
+        image: "",
       });
-
-      if (!res.ok) {
-        throw new Error("Failed to update category");
-      }
-
-      await fetchCategories();
-
-      resetModal();
     } catch (error) {
       console.log(error);
     } finally {
@@ -131,7 +95,7 @@ export default function CategoriesPage() {
   const handleDeleteCategory = async (id) => {
     try {
       const confirmDelete = confirm(
-        "Are you sure you want to delete this category?",
+        "Are you sure you want to delete this category?"
       );
 
       if (!confirmDelete) return;
@@ -146,38 +110,10 @@ export default function CategoriesPage() {
     }
   };
 
-  // OPEN EDIT MODAL
-  const openEditModal = (item) => {
-    setEditMode(true);
-
-    setSelectedId(item.id);
-
-    setFormData({
-      name: item.name,
-      image: item.image,
-    });
-
-    setOpenModal(true);
-  };
-
-  // RESET MODAL
-  const resetModal = () => {
-    setOpenModal(false);
-
-    setEditMode(false);
-
-    setSelectedId(null);
-
-    setFormData({
-      name: "",
-      image: "",
-    });
-  };
-
   // FILTERED CATEGORIES
   const filteredCategories = useMemo(() => {
     return categories.filter((item) =>
-      item.name.toLowerCase().includes(search.toLowerCase()),
+      item.name.toLowerCase().includes(search.toLowerCase())
     );
   }, [categories, search]);
 
@@ -199,11 +135,7 @@ export default function CategoriesPage() {
         {/* RIGHT */}
         <div className="flex flex-wrap gap-3">
           <button
-            onClick={() => {
-              resetModal();
-
-              setOpenModal(true);
-            }}
+            onClick={() => setOpenModal(true)}
             className="
               h-[40px]
               px-4
@@ -251,25 +183,26 @@ export default function CategoriesPage() {
         </div>
       </div>
 
-      {/* GRID */}
+      {/* CATEGORIES GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mt-5">
         {filteredCategories.map((item) => (
           <div
             key={item.id}
             className="
-  relative
-  bg-white
-  rounded-[24px]
-  overflow-hidden
-  border border-[#ececec]
-  shadow-sm
-  hover:shadow-md
-  transition-all
-"
+              bg-white
+              rounded-[24px]
+              overflow-hidden
+              border border-[#ececec]
+              shadow-sm
+              hover:shadow-md
+              transition-all
+              cursor-pointer
+            "
           >
             {/* TOP */}
             <div className="bg-[#f7f7f7] p-4">
               <div className="flex items-center justify-between">
+                {/* PRODUCTS COUNT */}
                 <div
                   className="
                     px-3 py-1
@@ -285,6 +218,7 @@ export default function CategoriesPage() {
                   {item.total_products || 0} Products
                 </div>
 
+                {/* MENU */}
                 <button
                   className="
                     w-8 h-8
@@ -293,7 +227,10 @@ export default function CategoriesPage() {
                     flex items-center justify-center
                   "
                 >
-                  <MoreVertical size={16} className="text-gray-500" />
+                  <MoreVertical
+                    size={16}
+                    className="text-gray-500"
+                  />
                 </button>
               </div>
 
@@ -320,9 +257,11 @@ export default function CategoriesPage() {
                 </p>
               </div>
 
-              {/* OPEN PRODUCTS */}
+              {/* ACTION BUTTON */}
               <button
-                onClick={() => router.push(`/admin/products/${item.slug}`)}
+                onClick={() =>
+                  router.push(`/admin/products/${item.slug}`)
+                }
                 className="
                   mt-5
                   w-full
@@ -340,55 +279,37 @@ export default function CategoriesPage() {
               </button>
 
               {/* ACTIONS */}
-              {/* ACTIONS */}
-              <div className="mt-3 flex items-center gap-2 relative z-20">
-                {/* EDIT */}
+              <div className="mt-3 flex items-center gap-2">
                 <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-
-                    openEditModal(item);
-                  }}
                   className="
-      flex-1
-      h-[38px]
-      rounded-xl
-      bg-violet-100
-      hover:bg-violet-200
-      text-violet-600
-      text-[13px]
-      font-medium
-      flex items-center justify-center gap-2
-      transition-all
-      cursor-pointer
-    "
+                    flex-1
+                    h-[38px]
+                    rounded-xl
+                    bg-violet-100
+                    text-violet-600
+                    text-[13px]
+                    font-medium
+                    flex items-center justify-center gap-2
+                  "
                 >
                   <Pencil size={14} />
                   Edit
                 </button>
 
-                {/* DELETE */}
                 <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-
-                    handleDeleteCategory(item.id);
-                  }}
+                  onClick={() =>
+                    handleDeleteCategory(item.id)
+                  }
                   className="
-      flex-1
-      h-[38px]
-      rounded-xl
-      bg-red-100
-      hover:bg-red-200
-      text-red-500
-      text-[13px]
-      font-medium
-      flex items-center justify-center gap-2
-      transition-all
-      cursor-pointer
-    "
+                    flex-1
+                    h-[38px]
+                    rounded-xl
+                    bg-red-100
+                    text-red-500
+                    text-[13px]
+                    font-medium
+                    flex items-center justify-center gap-2
+                  "
                 >
                   <Trash2 size={14} />
                   Delete
@@ -399,7 +320,7 @@ export default function CategoriesPage() {
         ))}
       </div>
 
-      {/* MODAL */}
+      {/* CREATE CATEGORY MODAL */}
       {openModal && (
         <div
           className="
@@ -422,16 +343,16 @@ export default function CategoriesPage() {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-[24px] font-bold text-[#111827]">
-                  {editMode ? "Edit Category" : "Create Category"}
+                  Create Category
                 </h2>
 
                 <p className="mt-1 text-[13px] text-gray-500">
-                  {editMode ? "Update category details" : "Add a new category"}
+                  Add a new category
                 </p>
               </div>
 
               <button
-                onClick={resetModal}
+                onClick={() => setOpenModal(false)}
                 className="
                   w-9 h-9
                   rounded-xl
@@ -445,7 +366,7 @@ export default function CategoriesPage() {
 
             {/* FORM */}
             <div className="mt-5 space-y-4">
-              {/* NAME */}
+              {/* CATEGORY NAME */}
               <div>
                 <label className="text-[13px] font-medium text-[#111827]">
                   Category Name
@@ -474,7 +395,7 @@ export default function CategoriesPage() {
                 />
               </div>
 
-              {/* IMAGE */}
+              {/* IMAGE URL */}
               <div>
                 <label className="text-[13px] font-medium text-[#111827]">
                   Image URL
@@ -524,7 +445,7 @@ export default function CategoriesPage() {
               {/* BUTTONS */}
               <div className="flex items-center gap-3 pt-2">
                 <button
-                  onClick={resetModal}
+                  onClick={() => setOpenModal(false)}
                   className="
                     flex-1
                     h-[45px]
@@ -538,7 +459,7 @@ export default function CategoriesPage() {
                 </button>
 
                 <button
-                  onClick={editMode ? handleEditCategory : handleCreateCategory}
+                  onClick={handleCreateCategory}
                   disabled={loading}
                   className="
                     flex-1
@@ -550,13 +471,7 @@ export default function CategoriesPage() {
                     font-medium
                   "
                 >
-                  {loading
-                    ? editMode
-                      ? "Updating..."
-                      : "Creating..."
-                    : editMode
-                      ? "Update"
-                      : "Create"}
+                  {loading ? "Creating..." : "Create"}
                 </button>
               </div>
             </div>
