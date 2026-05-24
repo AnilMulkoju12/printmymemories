@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetProductsQuery } from "@/redux/services/productApi";
+import { useGetProductsQuery } from "../../redux/services/productApi";
 
 export default function ProductsPage() {
   const { data, isLoading, error } = useGetProductsQuery();
